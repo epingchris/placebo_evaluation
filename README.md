@@ -1,4 +1,4 @@
-# Evaluation of methods of counterfactual estimation for REDD+ projects via a placebo approach
+# Evaluating methods of counterfactual estimation with placebos
  
 The repository contains the project that evaluates various _ex ante_ and _ex post_ methods of counterfactual estimation for REDD+ projects (Reducing Emissions from Deforestation and forest Degradation in Developing countries), using a set of placebo projects randomly selected across the wet tropics with comparable characterics to existing REDD+ projects. Because of the absence of project activities, project and counterfactual deforestation should follow the identical trend in these placebo projects, allowing us to evaluate the predictive performance of a method by comparing predictions against observed deforestation rates in the placebo projects.
 
