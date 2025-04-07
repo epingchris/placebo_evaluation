@@ -7,7 +7,7 @@ from pathlib import Path
 
 # paths
 CSV_DIR = Path("/maps/jh2589/exante/csvs")
-PLOT_DIR = Path("/maps/jh2589/exante/plots")
+PLOT_DIR = Path("/maps/epr26/placebo_evaluation_out")
 PLOT_DIR.mkdir(exist_ok=True)
 
 INPUT_CSV = CSV_DIR / "project_rates.csv"
@@ -119,13 +119,13 @@ def make_single_scatter(x_col, filename, y_col="k_rate", colour="#1f77b4"):
 # create a multi-facet scatter
 make_facet_scatter(
     ["regional_exante_rate", "k_exante_rate", "s_exante_rate"],
-    "exante_counterfactuals_vs_observed_rate.png",
+    "out_figure4a_exante.png",
     colours=["#006CD1", "#40B0A6", "#CDAC60"]
 )
 
 # create a single scatter
 make_single_scatter(
     "s_expost_rate",
-    "expost_counterfactual_vs_observed_rate.png",
+    "out_figure4b_expost.png",
     colour="#C13C3C"
 )
