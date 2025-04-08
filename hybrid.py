@@ -8,8 +8,8 @@ from pathlib import Path
 PARQUET_DIR = Path('/maps/jh2589/exante/parquets')
 OBSERVED_CSV = Path('/maps/jh2589/exante/csvs/k_rates.csv')
 
-PROJECT_BASELINES  = range(2001, 2012)
-REGIONAL_BASELINES = range(2001, 2012)
+PROJECT_BASELINES  = range(2001, 2011)
+REGIONAL_BASELINES = range(2001, 2011)
 YEARS_POST = range(1, 11)
 YEARS_LABELS = [2011 + x for x in YEARS_POST]
 
@@ -86,8 +86,7 @@ for pb in PROJECT_BASELINES:
             else:
                 reg_rate = np.nan
 
-            for offset in YEARS_POST:
-                yr = 2011 + offset
+            for yr in YEARS_LABELS:
                 col_proj = f'rate_{yr}_proj'
                 col_reg  = f'rate_{yr}_reg'
                 col_hyb  = f'rate_{yr}_hyb'
