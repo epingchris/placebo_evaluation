@@ -17,9 +17,9 @@ fn_reg      = CSV_DIR / 'regional_exante_rates.csv'
 fn_s_expost = CSV_DIR / 's_expost_rates.csv'
 
 out_csv      = CSV_DIR / 'goodness_of_fit.csv'
-out_png_mae  = PLOT_DIR / 'out_figure5a_mae.png'
-out_png_bias = PLOT_DIR / 'out_figure5b_bias.png'
-out_png_r2   = PLOT_DIR / 'out_figure5c_r2.png'
+out_png_mae  = PLOT_DIR / 'out_figure5a_mae_new.png'
+out_png_bias = PLOT_DIR / 'out_figure5b_bias_new.png'
+out_png_r2   = PLOT_DIR / 'out_figure5c_r2_new.png'
 
 # read all csvs
 k_df        = pd.read_csv(fn_k)
@@ -34,14 +34,6 @@ df_merged = df_merged.merge(s_exante_df, on = 'project', suffixes = ('', '_sex')
 df_merged = df_merged.merge(reg_df, on = 'project', suffixes = ('', '_reg'))
 df_merged = df_merged.merge(s_expost_df, on = 'project', suffixes = ('', '_sexp'))
 
-def r2_identity(observed, predicted):
-    pairs = pd.DataFrame({'obs': observed, 'pred': predicted}).dropna()
-    obs = pairs['obs']
-    pred = pairs['pred']
-    sse = np.sum((obs - pred) ** 2)
-    sst = np.sum((obs - obs.mean()) ** 2)
-    return 1.0 - sse / sst
-
 def mae(observed, predicted):
     pairs = pd.DataFrame({'obs': observed, 'pred': predicted}).dropna()
 
@@ -51,7 +43,15 @@ def bias(observed, predicted):
     pairs = pd.DataFrame({'obs': observed, 'pred': predicted}).dropna()
     return np.mean(pairs['pred'] - pairs['obs'])
 
-# compute r2, mae, and bias for each year and each method
+def r2_identity(observed, predicted):
+    pairs = pd.DataFrame({'obs': observed, 'pred': predicted}).dropna()
+    obs = pairs['obs']
+    pred = pairs['pred']
+    sse = np.sum((obs - pred) ** 2)
+    sst = np.sum((obs - obs.mean()) ** 2)
+    return 1.0 - sse / sst
+
+# compute mae, bias, and r2 for each year and each method
 methods = {
     'k_exante':         '_kex',
     's_exante':         '_sex',
@@ -65,12 +65,12 @@ for year in range(2012, 2022):
     row = {'year': year}
     for method_key, suffix in methods.items():
         col_pred = f"rate_{year}{suffix}"
-        r2_val = r2_identity(df_merged[col_obs], df_merged[col_pred])
         mae_val = mae(df_merged[col_obs], df_merged[col_pred])
         bias_val = bias(df_merged[col_obs], df_merged[col_pred])
-        row[f"{method_key}_r2"] = r2_val
-        row[f"{method_key}_mae"] = mae_val
-        row[f"{method_key}_bias"] = bias_val
+        r2_val = r2_identity(df_merged[col_obs], df_merged[col_pred])
+        row[f'{method_key}_mae'] = mae_val
+        row[f'{method_key}_bias'] = bias_val
+        row[f'{method_key}_r2'] = r2_val
     results.append(row)
 
 metrics_df = pd.DataFrame(results)
@@ -87,48 +87,24 @@ plt.rc('ytick', labelsize = 12)
 plt.rc('legend', fontsize = 12)
 plt.rc('savefig', dpi = 150)
 
-# mae plot
-plt.figure()
-plt.plot(years, metrics_df['regional_exante_mae'], label = 'Ex ante regional', color = '#006CD1', linewidth = 1)
-plt.plot(years, metrics_df['k_exante_mae'], label = 'Ex ante project', color = '#40B0A6', linewidth = 1)
-plt.plot(years, metrics_df['s_exante_mae'], label = 'Ex ante time-shifted', color = '#CDAC60', linewidth = 1)
-plt.plot(years, metrics_df['s_expost_mae'], label = 'Ex post matching', color = '#C13C3C', linestyle = 'dashed', linewidth = 2)
-plt.title('A. Mean absolute error (MAE)')
-plt.xlabel('Year')
-plt.ylabel('MAE')
-plt.legend(loc = 'center left', bbox_to_anchor=(1.05, 0.5), ncol = 1)
-plt.tight_layout()
-plt.savefig(out_png_mae, dpi=150, bbox_inches='tight')
-plt.show()
-print(f"saved mae plot to {out_png_mae}")
+# Set graphic labels
+titles = ['A. Mean absolute error (MAE)', 'B. Mean bias', 'C. Goodness-of-fit']
+ylabels = ['MAE', 'Bias', 'R² over the identity line']
+out_paths = [out_png_mae, out_png_bias, out_png_r2]
 
-# bias plot
-plt.figure()
-plt.plot(years, metrics_df['regional_exante_bias'], label = 'Ex ante regional', color = '#006CD1', linewidth = 1)
-plt.plot(years, metrics_df['k_exante_bias'], label = 'Ex ante project', color = '#40B0A6', linewidth = 1)
-plt.plot(years, metrics_df['s_exante_bias'], label = 'Ex ante time-shifted', color = '#CDAC60', linewidth = 1)
-plt.plot(years, metrics_df['s_expost_bias'], label = 'Ex post matching', color = '#C13C3C', linestyle = 'dashed', linewidth = 2)
-plt.axhline(0, color='gray', linestyle='--') # dashed horizontal line at 0
-plt.title('B. Mean bias')
-plt.xlabel('Year')
-plt.ylabel('Bias')
-plt.legend(loc = 'center left', bbox_to_anchor=(1.05, 0.5), ncol = 1)
-plt.tight_layout()
-plt.savefig(out_png_bias, bbox_inches='tight')
-plt.show()
-print(f"saved bias plot to {out_png_bias}")
-
-# r2 plot
-plt.figure()
-plt.plot(years, metrics_df['regional_exante_r2'], label = 'Ex ante regional', color = '#006CD1', linewidth = 1)
-plt.plot(years, metrics_df['k_exante_r2'], label = 'Ex ante project', color = '#40B0A6', linewidth = 1)
-plt.plot(years, metrics_df['s_exante_r2'], label = 'Ex ante time-shifted', color = '#CDAC60', linewidth = 1)
-plt.plot(years, metrics_df['s_expost_r2'], label = 'Ex post matching', color = '#C13C3C', linestyle = 'dashed', linewidth = 2)
-plt.title('C. Goodness-of-fit')
-plt.xlabel('Year')
-plt.ylabel('R² over the identity line)')
-plt.legend(loc = 'center left', bbox_to_anchor=(1.05, 0.5), ncol = 1)
-plt.tight_layout()
-plt.savefig(out_png_r2, bbox_inches='tight')
-plt.show()
-print(f"saved r² plot to {out_png_r2}")
+for i, metric in enumerate(['mae', 'bias', 'r2']): # plot for each metric
+    plt.figure()
+    plt.plot(years, metrics_df[f'regional_exante_{metric}'], label = 'Ex ante regional', color = '#006CD1', linewidth = 1)
+    plt.plot(years, metrics_df[f'k_exante_{metric}'], label = 'Ex ante project', color = '#40B0A6', linewidth = 1)
+    plt.plot(years, metrics_df[f's_exante_{metric}'], label = 'Ex ante time-shifted', color = '#CDAC60', linewidth = 1)
+    plt.plot(years, metrics_df[f's_expost_{metric}'], label = 'Ex post matching', color = '#C13C3C', linestyle = 'dashed', linewidth = 2)
+    if metric == 'bias':
+        plt.axhline(0, color='gray', linestyle='--') # dashed horizontal line at 0 for the bias plot
+    plt.title(titles[i])
+    plt.xlabel('Year')
+    plt.ylabel(ylabels[i])
+    plt.legend(loc = 'center left', bbox_to_anchor = (1.05, 0.5), ncol = 1)
+    plt.tight_layout()
+    plt.savefig(out_paths[i], bbox_inches = 'tight')
+    plt.show()
+    print(f"saved {metric} plot to {out_paths[i]}")
