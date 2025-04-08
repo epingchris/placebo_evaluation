@@ -134,6 +134,7 @@ for pb in PROJECT_BASELINES:
         })
 
         combination_predictions[(pb, rb)] = df_merged
+        print(f'Finished: Project = {pb} and Regional = {rb}')
 
 df_results = pd.DataFrame(results_all)
 RESULTS_CSV = '/maps/epr26/placebo_evaluation_out/hybrid_results.csv'
