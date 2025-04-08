@@ -6,8 +6,8 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 
 # set up paths for csvs and plots
-CSV_DIR = Path("/maps/jh2589/exante/csvs")
-PLOT_DIR = Path("/maps/epr26/placebo_evaluation_out")
+CSV_DIR = Path('/maps/jh2589/exante/csvs')
+PLOT_DIR = Path('/maps/epr26/placebo_evaluation_out')
 PLOT_DIR.mkdir(exist_ok = True)
 
 fn_k        = CSV_DIR / 'k_rates.csv'
@@ -16,10 +16,11 @@ fn_s_exante = CSV_DIR / 's_exante_rates.csv'
 fn_reg      = CSV_DIR / 'regional_exante_rates.csv'
 fn_s_expost = CSV_DIR / 's_expost_rates.csv'
 
-out_csv      = CSV_DIR / 'goodness_of_fit.csv'
-out_png_mae  = PLOT_DIR / 'out_figure5a_mae_new.png'
-out_png_bias = PLOT_DIR / 'out_figure5b_bias_new.png'
-out_png_r2   = PLOT_DIR / 'out_figure5c_r2_new.png'
+out_csv          = CSV_DIR / 'goodness_of_fit.csv'
+out_png_mae      = PLOT_DIR / 'out_figure5a_mae_new.png'
+out_png_bias     = PLOT_DIR / 'out_figure5b_bias_new.png'
+out_png_r2       = PLOT_DIR / 'out_figure5c_r2_new.png'
+out_png_combined = PLOT_DIR / 'out_figure5_combined.png'
 
 # read all csvs
 k_df        = pd.read_csv(fn_k)
@@ -61,10 +62,10 @@ methods = {
 
 results = []
 for year in range(2012, 2022):
-    col_obs = f"rate_{year}"
+    col_obs = f'rate_{year}'
     row = {'year': year}
     for method_key, suffix in methods.items():
-        col_pred = f"rate_{year}{suffix}"
+        col_pred = f'rate_{year}{suffix}'
         mae_val = mae(df_merged[col_obs], df_merged[col_pred])
         bias_val = bias(df_merged[col_obs], df_merged[col_pred])
         r2_val = r2_identity(df_merged[col_obs], df_merged[col_pred])
@@ -75,7 +76,7 @@ for year in range(2012, 2022):
 
 metrics_df = pd.DataFrame(results)
 metrics_df.to_csv(out_csv, index=False)
-print(f"wrote r², mae, and bias to {out_csv}")
+print(f'wrote r², mae, and bias to {out_csv}')
 
 years = metrics_df['year']
 
@@ -88,23 +89,28 @@ plt.rc('legend', fontsize = 12)
 plt.rc('savefig', dpi = 150)
 
 # Set graphic labels
+metrics = ['mae', 'bias', 'r2']
 titles = ['A. Mean absolute error (MAE)', 'B. Mean bias', 'C. Goodness-of-fit']
 ylabels = ['MAE', 'Bias', 'R² over the identity line']
 out_paths = [out_png_mae, out_png_bias, out_png_r2]
 
-for i, metric in enumerate(['mae', 'bias', 'r2']): # plot for each metric
-    plt.figure()
-    plt.plot(years, metrics_df[f'regional_exante_{metric}'], label = 'Ex ante regional', color = '#006CD1', linewidth = 1)
-    plt.plot(years, metrics_df[f'k_exante_{metric}'], label = 'Ex ante project', color = '#40B0A6', linewidth = 1)
-    plt.plot(years, metrics_df[f's_exante_{metric}'], label = 'Ex ante time-shifted', color = '#CDAC60', linewidth = 1)
-    plt.plot(years, metrics_df[f's_expost_{metric}'], label = 'Ex post matching', color = '#C13C3C', linestyle = 'dashed', linewidth = 2)
+n = len(metrics)
+fig, axs = plt.subplots(n, 1, figsize=(8, 4 * n), sharex = True)
+
+for i, metric in enumerate(metrics): # plot for each metric
+    ax = axs[i]
+    ax.plot(years, metrics_df[f'regional_exante_{metric}'], label = 'Ex ante regional', color = '#006CD1', linewidth = 1)
+    ax.plot(years, metrics_df[f'k_exante_{metric}'], label = 'Ex ante project', color = '#40B0A6', linewidth = 1)
+    ax.plot(years, metrics_df[f's_exante_{metric}'], label = 'Ex ante time-shifted', color = '#CDAC60', linewidth = 1)
+    ax.plot(years, metrics_df[f's_expost_{metric}'], label = 'Ex post matching', color = '#C13C3C', linestyle = 'dashed', linewidth = 2)
     if metric == 'bias':
-        plt.axhline(0, color='gray', linestyle='--') # dashed horizontal line at 0 for the bias plot
-    plt.title(titles[i])
-    plt.xlabel('Year')
-    plt.ylabel(ylabels[i])
-    plt.legend(loc = 'center left', bbox_to_anchor = (1.05, 0.5), ncol = 1)
-    plt.tight_layout()
-    plt.savefig(out_paths[i], bbox_inches = 'tight')
-    plt.show()
-    print(f"saved {metric} plot to {out_paths[i]}")
+        ax.axhline(0, color='gray', linestyle='--') # dashed horizontal line at 0 for the bias plot
+    ax.set_title(titles[i])
+    ax.set_ylabel(ylabels[i])
+
+axs[-1].set_xlabel('Year')
+handles, labels = axs[0].get_legend_handles_labels()
+fig.legend(handles, labels, loc = 'center left', bbox_to_anchor = (1.01, 0.5), ncol = 1)
+fig.tight_layout()
+fig.savefig(out_png_combined, bbox_inches = 'tight')
+print(f'Saved combined plot to {out_png_combined}')
