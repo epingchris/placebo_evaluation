@@ -99,10 +99,10 @@ fig, axs = plt.subplots(n, 1, figsize=(8, 4 * n), sharex = True)
 
 for i, metric in enumerate(metrics): # plot for each metric
     ax = axs[i]
-    ax.plot(years, metrics_df[f'regional_exante_{metric}'], label = 'Ex ante regional', color = '#006CD1', linewidth = 1)
-    ax.plot(years, metrics_df[f'k_exante_{metric}'], label = 'Ex ante project', color = '#40B0A6', linewidth = 1)
-    ax.plot(years, metrics_df[f's_exante_{metric}'], label = 'Ex ante time-shifted', color = '#CDAC60', linewidth = 1)
-    ax.plot(years, metrics_df[f's_expost_{metric}'], label = 'Ex post matching', color = '#C13C3C', linestyle = 'dashed', linewidth = 2)
+    ax.plot(years, metrics_df[f'regional_exante_{metric}'], label = '$\it{Ex\ ante}$ regional', color = '#006CD1', linewidth = 2)
+    ax.plot(years, metrics_df[f'k_exante_{metric}'], label = '$\it{Ex\ ante}$ project', color = '#40B0A6', linewidth = 2)
+    ax.plot(years, metrics_df[f's_exante_{metric}'], label = '$\it{Ex\ ante}$ time-shifted', color = '#CDAC60', linewidth = 2)
+    ax.plot(years, metrics_df[f's_expost_{metric}'], label = '$\it{Ex\ post}$ matching', color = '#C13C3C', linestyle = 'dashed', linewidth = 1)
     if metric == 'bias':
         ax.axhline(0, color='gray', linestyle='--') # dashed horizontal line at 0 for the bias plot
     ax.set_title(titles[i])
