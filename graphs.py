@@ -29,12 +29,6 @@ def make_scatter(counterfactual_cols, filename, observed_col="k_rate", colours=N
     n = len(counterfactual_cols)
     fig, axs = plt.subplots(1, n, figsize=(6*n, 5), sharey=True)
 
-    all_x = df[counterfactual_cols].values.flatten()
-    all_y = df[observed_col].values.flatten()
-    all_vals = np.concatenate([all_x, all_y])
-    min_val = np.floor(all_vals.min() / 5) * 5
-    max_val = np.ceil(all_vals.max() / 5) * 5
-
     for i, x_col in enumerate(counterfactual_cols):
         ax = axs[i] if n > 1 else axs
         x = df[x_col]
