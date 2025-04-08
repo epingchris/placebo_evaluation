@@ -75,13 +75,13 @@ for year in range(2012, 2022):
     results.append(row)
 
 metrics_df = pd.DataFrame(results)
-metrics_df.to_csv(out_csv, index=False)
+metrics_df.to_csv(out_csv, index = False)
 print(f'wrote r², mae, and bias to {out_csv}')
 
 years = metrics_df['year']
 
 # Set graphic parameters
-plt.rc('figure', figsize=(8, 4))
+plt.rc('figure', figsize = (8, 4))
 plt.rc('axes', titlesize = 16, labelsize = 14)
 plt.rc('xtick', labelsize = 12)
 plt.rc('ytick', labelsize = 12)
@@ -95,7 +95,7 @@ ylabels = ['MAE', 'Bias', 'R² over the identity line']
 out_paths = [out_png_mae, out_png_bias, out_png_r2]
 
 n = len(metrics)
-fig, axs = plt.subplots(n, 1, figsize=(8, 4 * n), sharex = True)
+fig, axs = plt.subplots(n, 1, figsize = (8, 4 * n), sharex = True)
 
 for i, metric in enumerate(metrics): # plot for each metric
     ax = axs[i]
