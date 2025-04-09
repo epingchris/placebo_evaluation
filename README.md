@@ -16,10 +16,12 @@ The project contains the following scripts, all written in Python:
 
 ## System requirements
 
-This project is developed under Python 3.12.2, and uses the libraries _panda_, _numpy_, _scipy_, and _matplotlib_.
+This project is developed under Python 3.12.2, and uses the libraries _panda_, _numpy_, _scipy_, _matplotlib_, and _seaborn_. Each script can be executed by simply running:
+```
+python3 -m [script name]
+```
 
-On the Sherwood cluster (Dept of Comp Sci, University of Cambridge), the easiest way to run a script is by:
-
+In addition, the Sherwood cluster (Dept of Comp Sci, University of Cambridge) currently hosts a Python environment wrapper `tmfpython3`, which contains all the libraries needed for the code (with the notable exception of _seaborn_). There, the scripts can be run by:
 ```
 tmfpython3 -m [script name]
 ```
