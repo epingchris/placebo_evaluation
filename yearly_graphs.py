@@ -31,7 +31,7 @@ if include_hybrid:
         include_hybrid = False
 
 out_csv_suffix = '_with_hybrid' if include_hybrid else ''
-fig_num = '10' if include_hybrid else '5'
+fig_num = '9' if include_hybrid else '5'
 out_csv          = CSV_DIR / f'goodness_of_fit{out_csv_suffix}.csv'
 out_png_mae      = PLOT_DIR / f'out_figure{fig_num}a_mae.png'
 out_png_bias     = PLOT_DIR / f'out_figure{fig_num}b_bias.png'
@@ -119,25 +119,33 @@ out_paths = [out_png_mae, out_png_bias, out_png_r2]
 n = len(metrics)
 fig, axs = plt.subplots(n, 1, figsize = (8, 4 * n), sharex = True)
 
-# Define colors
+# Define colors and linewidths
 colors = {
-    'regional_exante': '#006CD1',  # Blue
+    'regional_exante': '#064687',  # Blue
     'k_exante': '#40B0A6',         # Teal
     's_exante': '#CDAC60',         # Gold
     's_expost': '#C13C3C',         # Red
     'hybrid_exante': '#9467BD'     # Purple for hybrid
 }
 
+linewidths = {
+    'regional_exante': 1.5,
+    'k_exante': 1.5,
+    's_exante': 1.5,
+    's_expost': 3,
+    'hybrid_exante': 3
+}
+
 for i, metric in enumerate(metrics): # plot for each metric
     ax = axs[i]
-    ax.plot(years, metrics_df[f'regional_exante_{metric}'], label = '$\it{Ex\ ante}$ regional', color = colors['regional_exante'], linewidth = 1)
-    ax.plot(years, metrics_df[f'k_exante_{metric}'], label = '$\it{Ex\ ante}$ project', color = colors['k_exante'], linewidth = 1)
-    ax.plot(years, metrics_df[f's_exante_{metric}'], label = '$\it{Ex\ ante}$ time-shifted', color = colors['s_exante'], linewidth = 1)
-    ax.plot(years, metrics_df[f's_expost_{metric}'], label = '$\it{Ex\ post}$ matching', color = colors['s_expost'], linestyle = 'dashed', linewidth = 2)
+    ax.plot(years, metrics_df[f'regional_exante_{metric}'], label = '$\it{Ex\ ante}$ regional', color = colors['regional_exante'], linewidth = linewidths['regional_exante'])
+    ax.plot(years, metrics_df[f'k_exante_{metric}'], label = '$\it{Ex\ ante}$ project', color = colors['k_exante'], linewidth = linewidths['k_exante'])
+    ax.plot(years, metrics_df[f's_exante_{metric}'], label = '$\it{Ex\ ante}$ time-shifted', color = colors['s_exante'], linewidth = linewidths['s_exante'])
+    ax.plot(years, metrics_df[f's_expost_{metric}'], label = '$\it{Ex\ post}$ matching', color = colors['s_expost'], linestyle = 'dashed', linewidth = linewidths['s_expost'])
     
     # Add hybrid plot if requested
     if include_hybrid:
-        ax.plot(years, metrics_df[f'hybrid_exante_{metric}'], label = '$\it{Ex\ ante}$ hybrid', color = colors['hybrid_exante'], linewidth = 2)
+        ax.plot(years, metrics_df[f'hybrid_exante_{metric}'], label = '$\it{Ex\ ante}$ hybrid', color = colors['hybrid_exante'], linewidth = linewidths['hybrid_exante'])
     
     if metric == 'bias':
         ax.axhline(0, color='gray', linestyle='--') # dashed horizontal line at 0 for the bias plot
@@ -156,13 +164,13 @@ print(f'Saved combined plot to {out_png_combined}')
 for i, metric in enumerate(metrics):
     plt.figure(figsize = (8, 4))
 
-    plt.plot(years, metrics_df[f'regional_exante_{metric}'], label = '$\it{Ex\ ante}$ regional', color = colors['regional_exante'], linewidth = 1)
-    plt.plot(years, metrics_df[f'k_exante_{metric}'], label = '$\it{Ex\ ante}$ project', color = colors['k_exante'], linewidth = 1)
-    plt.plot(years, metrics_df[f's_exante_{metric}'], label = '$\it{Ex\ ante}$ time-shifted', color = colors['s_exante'], linewidth = 1)
-    plt.plot(years, metrics_df[f's_expost_{metric}'], label = '$\it{Ex\ post}$ matching', color = colors['s_expost'], linestyle = 'dashed', linewidth = 2)
+    plt.plot(years, metrics_df[f'regional_exante_{metric}'], label = '$\it{Ex\ ante}$ regional', color = colors['regional_exante'], linewidth = linewidths['regional_exante'])
+    plt.plot(years, metrics_df[f'k_exante_{metric}'], label = '$\it{Ex\ ante}$ project', color = colors['k_exante'], linewidth = linewidths['k_exante'])
+    plt.plot(years, metrics_df[f's_exante_{metric}'], label = '$\it{Ex\ ante}$ time-shifted', color = colors['s_exante'], linewidth = linewidths['s_exante'])
+    plt.plot(years, metrics_df[f's_expost_{metric}'], label = '$\it{Ex\ post}$ matching', color = colors['s_expost'], linestyle = 'dashed', linewidth = linewidths['s_expost'])
 
     if include_hybrid:
-        plt.plot(years, metrics_df[f'hybrid_exante_{metric}'], label = '$\it{Ex\ ante}$ hybrid', color = colors['hybrid_exante'], linewidth = 2)
+        plt.plot(years, metrics_df[f'hybrid_exante_{metric}'], label = '$\it{Ex\ ante}$ hybrid', color = colors['hybrid_exante'], linewidth = linewidths['hybrid_exante'])
 
     if metric == 'bias':
         plt.axhline(0, color='gray', linestyle='--')
