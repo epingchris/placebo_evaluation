@@ -1,6 +1,6 @@
 *.png
 *.csv
-__pycache__
+__pycache__/*
 .vscode
 venv/
 download_big_asset.py
