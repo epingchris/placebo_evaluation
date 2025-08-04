@@ -22,12 +22,12 @@ axis_labels = {
     "s_expost_rate": ""
 }
 
-def make_scatter(counterfactual_cols, filename, observed_col="k_rate", colours=None):
+def make_scatter(counterfactual_cols, filename, observed_col="k_rate", colours = None):
     """
     create scatter subplots for each approach
     """
     n = len(counterfactual_cols)
-    fig, axs = plt.subplots(1, n, figsize=(6*n, 5), sharey=True)
+    fig, axs = plt.subplots(1, n, figsize=(6*n, 5), sharey = True)
 
     for i, x_col in enumerate(counterfactual_cols):
         ax = axs[i] if n > 1 else axs
@@ -38,7 +38,7 @@ def make_scatter(counterfactual_cols, filename, observed_col="k_rate", colours=N
         bias_val = np.mean(x - y)
         prediction = 1 - np.sum((y - x)**2) / np.sum((y - y.mean())**2)
 
-        ax.scatter(x, y, color=colours[i])
+        ax.scatter(x, y, c = colours[i])
         mins = min(x.min(), y.min() + 0.5)
         maxs = max(x.max(), y.max() + 0.5)
         line = np.linspace(mins, maxs, 100)
@@ -72,12 +72,12 @@ def make_scatter(counterfactual_cols, filename, observed_col="k_rate", colours=N
 make_scatter(
     ["regional_exante_rate", "k_exante_rate", "s_exante_rate"],
     "out_figure4a_exante.png",
-    colours=["#006CD1", "#40B0A6", "#CDAC60"]
+    colours = ["006CD1", "40B0A6", "CDAC60"]
 )
 
 # create the plot for ex post method
 make_scatter(
     ["s_expost_rate"],
     "out_figure4b_expost.png",
-    colour="#C13C3C"
+    colours = ["C13C3C"]
 )
