@@ -9,10 +9,11 @@ The code ingests the parquet files of sampled pixels in the project area and par
 ## Structure
 
 The project contains the following scripts, all written in Python:
-1. `rates.py`: estimates annual counterfactual deforestation rates (%) using the four methods and comparing against observed deforestation rates in placebo projects
-2. `graphs.py`: plots results from script 1
-3. `yearly_rates.py`: calculates the predictive performance of the four methods for near-future time intervals of different durations
-4. `yearly_graphs.py`: plots results from script 3
+1. ``generate_placebos.py`: randomly generates a set of placebo project areas with Google Earth Engine API
+2. `rates.py`: estimates annual counterfactual deforestation rates (%) using the four methods and comparing against observed deforestation rates in placebo projects
+3. `graphs.py`: plots results from script 2
+4. `yearly_rates.py`: calculates the predictive performance of the four methods for near-future time intervals of different durations
+5. `yearly_graphs.py`: plots results from script 4
 
 ## System requirements
 
